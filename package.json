@@ -1,0 +1,21 @@
+{
+  "name": "docpad-plugin-imagical",
+  "description"   : "Image optimization mashup for docpad.",
+  "version"       : "1.0.0",
+  "dependencies"  : {
+    "docpad"        : "6.x",
+    "docpad-plugin-frontend" : "1.x",
+    "pulverizr"     : "latest",
+    "enhance-css"   : "latest"
+  },
+  "keywords": [
+    "docpad",
+    "plugin",
+    "image optimization",
+    "pulverizr",
+    "enhance-css",
+    "stylesheets",
+    "asset hosts",
+    "base64"
+  ]
+}
