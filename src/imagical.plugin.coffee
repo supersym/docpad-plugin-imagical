@@ -5,7 +5,8 @@
 fs = require("fs")
 path = require("path")
 util = require("util")
-EnhanceCSS = require("enhance-css")
+_ = require("underscore")
+
 
 # Next for the other assets, if we can, compress them with better algorithms
 Pulverizr = require("pulverizr")
@@ -52,33 +53,56 @@ if config.source
 else
 
   # TODO: Docpad graceful pass, don't get from stdin
+  docpad.warn 'something'
+  throw error
 
-  stdin = process.openStdin()
-  stdin.setEncoding "utf-8"
-  text = ""
-  stdin.on "data", (chunk) ->
-    text += chunk
-
-  stdin.on "end", ->
-    enhance text, output
 
 # Export Plugin
 module.exports = (BasePlugin) ->
-
     # Define Plugin
     class Imagical extends BasePlugin
 
-        # Plugin name
-        name: 'docpad-plugin-imagical'
+      # Plugin name
+      name: 'docpad-plugin-imagical'
 
-        # Configuration
-        config:
-           source: null
-            target: null
-            rootPath: null
-            assetHosts: null
-            pregzip: false
-            noEmbed: false
-            cryptedStamp: false
-            stamp: true
+      # Configuration
+      config:
+        source: null
+        target: null
+        rootPath: null
+        assetHosts: null
+        pregzip: false
+        noEmbed: false
+        cryptedStamp: false
+        stamp: true
+
+      enhance
+
+    # Render some content
+    render: (opts, next) ->
+
+        # Prepare
+        {extension,inExtension,outExtension,templateData,file} = opts
+
+        # Check extensions
+        if inExtension in ['styl','stylus','scss','less'] and outExtension in ['css'] or extension is 'css'
+
+            # Requires
+            #EnhanceCSS = require("enhance-css")
+            datauri = require("datauri")
+            CSS_URL = /(?:url\(["']?)(.*?)(?:["']?\))/
+
+            # https://github.com/ahomu/grunt-data-uri/blob/master/tasks/data-uri.js
+
+            uris = _.uniq matches.map, (m) ->
+              m.match(CSS_URL)[1];
+
+            # LOGIC COMES HERE
+            # opts.content = EnhanceCSS.renderToSomethingElse(opts.content)
+
+        # Done, return back to DocPad
+        return next()
+
+    # ...
+
 
